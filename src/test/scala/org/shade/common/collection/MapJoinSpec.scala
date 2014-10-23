@@ -39,7 +39,8 @@ class MapJoinSpec extends WordSpec with ShouldMatchers {
 
       m1.outerJoin(m2)(join) shouldBe Map[String, String](
         "A" -> "*a*N2*",
-        "B" -> "*b*N2*")
+        "B" -> "*b*N2*"
+      )
     }
 
     "return a map containing all entries from the second map joined with None if the first map is empty" in {
@@ -62,7 +63,8 @@ class MapJoinSpec extends WordSpec with ShouldMatchers {
         "A" -> "*a*N2*",
         "B" -> "*b*N2*",
         "C" -> "*N1*1*",
-        "D" -> "*N1*2*")
+        "D" -> "*N1*2*"
+      )
     }
 
     "return a map containing the joined entries of both maps where there are overlapping keys" in {
@@ -74,7 +76,163 @@ class MapJoinSpec extends WordSpec with ShouldMatchers {
         "A" -> "*a*N2*",
         "B" -> "*b*1*",
         "C" -> "*c*2*",
-        "D" -> "*N1*3*")
+        "D" -> "*N1*3*"
+      )
+    }
+  }
+
+  "A left join" should {
+
+    def join(v1: String, v2: Option[Int]) = "*" + v1 + "*" + v2.getOrElse("N2") + "*"
+
+    "return an empty map if both input maps are empty" in {
+      val m1 = Map.empty[String, String]
+      val m2 = Map.empty[String, Int]
+
+      m1.leftJoin(m2)(join) shouldBe empty
+    }
+
+    "return a map containing all entries from the first map joined with None if the second map is empty" in {
+
+      val m1 = Map[String, String]("A" -> "a", "B" -> "b")
+      val m2 = Map.empty[String, Int]
+
+      m1.leftJoin(m2)(join) shouldBe Map[String, String](
+        "A" -> "*a*N2*",
+        "B" -> "*b*N2*"
+      )
+    }
+
+    "return an empty map if the first map is empty" in {
+
+      val m1 = Map.empty[String, String]
+      val m2 = Map[String, Int]("A" -> 1, "B" -> 2)
+
+      m1.leftJoin(m2)(join) shouldBe empty
+    }
+
+    "return a map containing all entries from the first map joined with None if there are no overlapping keys" in {
+
+      val m1 = Map[String, String]("A" -> "a", "B" -> "b")
+      val m2 = Map[String, Int]("C" -> 1, "D" -> 2)
+
+      m1.leftJoin(m2)(join) shouldBe Map[String, String](
+        "A" -> "*a*N2*",
+        "B" -> "*b*N2*"
+      )
+    }
+
+    "return a map containing the joined entries of both maps where there are overlapping keys, excluding items just in the second map" in {
+
+      val m1 = Map[String, String]("A" -> "a", "B" -> "b", "C" -> "c")
+      val m2 = Map[String, Int]("B" -> 1, "C" -> 2, "D" -> 3)
+
+      m1.leftJoin(m2)(join) shouldBe Map[String, String](
+        "A" -> "*a*N2*",
+        "B" -> "*b*1*",
+        "C" -> "*c*2*"
+      )
+    }
+  }
+
+  "A right join" should {
+
+    def join(v1: Option[String], v2: Int) = "*" + v1.getOrElse("N1") + "*" + v2 + "*"
+
+    "return an empty map if both input maps are empty" in {
+      val m1 = Map.empty[String, String]
+      val m2 = Map.empty[String, Int]
+
+      m1.rightJoin(m2)(join) shouldBe empty
+    }
+
+    "return an empty map if the second map is empty" in {
+
+      val m1 = Map[String, String]("A" -> "a", "B" -> "b")
+      val m2 = Map.empty[String, Int]
+
+      m1.rightJoin(m2)(join) shouldBe empty
+    }
+
+    "return a map containing all entries from the second map joined with None if the first map is empty" in {
+
+      val m1 = Map.empty[String, String]
+      val m2 = Map[String, Int]("A" -> 1, "B" -> 2)
+
+      m1.rightJoin(m2)(join) shouldBe Map[String, String](
+        "A" -> "*N1*1*",
+        "B" -> "*N1*2*"
+      )
+    }
+
+    "return a map containing all entries from the second map joined with None if there are no overlapping keys" in {
+
+      val m1 = Map[String, String]("A" -> "a", "B" -> "b")
+      val m2 = Map[String, Int]("C" -> 1, "D" -> 2)
+
+      m1.rightJoin(m2)(join) shouldBe Map[String, String](
+        "C" -> "*N1*1*",
+        "D" -> "*N1*2*"
+      )
+    }
+
+    "return a map containing the joined entries of both maps where there are overlapping keys, excluding items just in the first map" in {
+
+      val m1 = Map[String, String]("A" -> "a", "B" -> "b", "C" -> "c")
+      val m2 = Map[String, Int]("B" -> 1, "C" -> 2, "D" -> 3)
+
+      m1.rightJoin(m2)(join) shouldBe Map[String, String](
+        "B" -> "*b*1*",
+        "C" -> "*c*2*",
+        "D" -> "*N1*3*"
+      )
+    }
+  }
+
+  "An inner join" should {
+
+    def join(v1: String, v2: Int) = s"*$v1*$v2*"
+
+    "return an empty map if both input maps are empty" in {
+      val m1 = Map.empty[String, String]
+      val m2 = Map.empty[String, Int]
+
+      m1.innerJoin(m2)(join) shouldBe empty
+    }
+
+    "return an empty map if the first map is empty" in {
+
+      val m1 = Map.empty[String, String]
+      val m2 = Map[String, Int]("A" -> 1, "B" -> 2)
+
+      m1.innerJoin(m2)(join) shouldBe empty
+    }
+
+    "return an empty map if the second map is empty" in {
+
+      val m1 = Map[String, String]("A" -> "a", "B" -> "b")
+      val m2 = Map.empty[String, Int]
+
+      m1.innerJoin(m2)(join) shouldBe empty
+    }
+
+    "return an empty map if there are no overlapping keys" in {
+
+      val m1 = Map[String, String]("A" -> "a", "B" -> "b")
+      val m2 = Map[String, Int]("C" -> 1, "D" -> 2)
+
+      m1.innerJoin(m2)(join) shouldBe empty
+    }
+
+    "return a map containing the joined entries of both maps where there are overlapping keys and skipping entries where the keys don't overlap" in {
+
+      val m1 = Map[String, String]("A" -> "a", "B" -> "b", "C" -> "c")
+      val m2 = Map[String, Int]("B" -> 1, "C" -> 2, "D" -> 3)
+
+      m1.innerJoin(m2)(join) shouldBe Map[String, String](
+        "B" -> "*b*1*",
+        "C" -> "*c*2*"
+      )
     }
   }
 }
