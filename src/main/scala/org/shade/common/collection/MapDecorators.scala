@@ -16,31 +16,31 @@
 package org.shade.common.collection
 
 object MapDecorators {
- 
-   implicit class MapJoin[K, V1](map1: Map[K, V1]) {
- 
-     def outerJoin[V2, R](map2: Map[K, V2])(join: (Option[V1], Option[V2]) => R): Map[K, R] = {
-       (map1.keys ++ map2.keys).map { key =>
-         key -> join(map1.get(key), map2.get(key))
-       }.toMap
-     }
 
-     def leftJoin[V2, R](map2: Map[K, V2])(join: (V1, Option[V2]) => R): Map[K, R] = {
-       map1.keys.map { key =>
-         key -> join(map1(key), map2.get(key))
-       }.toMap
-     }
+  implicit class MapJoin[K, V1](map1: Map[K, V1]) {
 
-     def rightJoin[V2, R](map2: Map[K, V2])(join: (Option[V1], V2) => R): Map[K, R] = {
-       map2.keys.map { key =>
-         key -> join(map1.get(key), map2(key))
-       }.toMap
-     }
+    def outerJoin[V2, R](map2: Map[K, V2])(join: (Option[V1], Option[V2]) => R): Map[K, R] = {
+      (map1.keys ++ map2.keys).map { key =>
+        key -> join(map1.get(key), map2.get(key))
+      }.toMap
+    }
 
-     def innerJoin[V2, R](map2: Map[K, V2])(join: (V1, V2) => R): Map[K, R] = {
-       map1.keys.collect {
-         case key if map2.contains(key) => key -> join(map1(key), map2(key))
-       }.toMap
-     }
-   }
- }
+    def leftJoin[V2, R](map2: Map[K, V2])(join: (V1, Option[V2]) => R): Map[K, R] = {
+      map1.keys.map { key =>
+        key -> join(map1(key), map2.get(key))
+      }.toMap
+    }
+
+    def rightJoin[V2, R](map2: Map[K, V2])(join: (Option[V1], V2) => R): Map[K, R] = {
+      map2.keys.map { key =>
+        key -> join(map1.get(key), map2(key))
+      }.toMap
+    }
+
+    def innerJoin[V2, R](map2: Map[K, V2])(join: (V1, V2) => R): Map[K, R] = {
+      map1.keys.collect {
+        case key if map2.contains(key) => key -> join(map1(key), map2(key))
+      }.toMap
+    }
+  }
+}
