@@ -15,9 +15,9 @@
  */
 package org.shade.common.collection
 
-import org.scalatest.{ShouldMatchers, WordSpec}
+import org.scalatest.{Matchers, WordSpec}
 
-class MapJoinSpec extends WordSpec with ShouldMatchers {
+class MapJoinSpec extends WordSpec with Matchers {
 
   import MapDecorators.MapJoin
 

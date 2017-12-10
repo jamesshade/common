@@ -2,11 +2,11 @@ organization := "org.shade"
 
 name := "common"
 
-version := "1.0.0-SNAPSHOT"
+version := "2.0.0-SNAPSHOT"
 
-scalaVersion := "2.11.2"
+scalaVersion := "2.12.4"
 
-crossScalaVersions := Seq("2.11.2", "2.10.4")
+crossScalaVersions := Seq("2.11.11", "2.12.4")
 
 scalacOptions ++= Seq("-deprecation")
 
@@ -17,6 +17,6 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "2.2.1" % "test" withSources() withJavadoc()
+  "org.scalatest" %% "scalatest" % "3.0.4" % "test" withSources() withJavadoc()
 )
 
