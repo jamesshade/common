@@ -20,5 +20,12 @@ object Strings {
         if (str.length < trimAt) str else s"${str.substring(0, trimAt)}$ellipses"
       }
     }
+
+    def chomp(trailingString: String): String = {
+      if (str.endsWith(trailingString))
+        str.substring(0, str.length - trailingString.length)
+      else
+        str
+    }
   }
 }

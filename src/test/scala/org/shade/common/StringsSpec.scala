@@ -34,4 +34,25 @@ class StringsSpec extends WordSpec with Matchers {
       "abcdefghij".shorten(8) shouldBe "abcde..."
     }
   }
+
+  "chomp" should {
+
+    "remove the supplied string from the wrapped string" in {
+      "abc".chomp("") shouldBe "abc"
+      "abc".chomp("c") shouldBe "ab"
+      "abc".chomp("bc") shouldBe "a"
+      "abc".chomp("abc") shouldBe ""
+      "this is a long string\n".chomp("\n") shouldBe "this is a long string"
+      "this is a long string\n".chomp("ng\n") shouldBe "this is a long stri"
+    }
+
+    "do nothing if the supplied string is not at the end of the wrapped string" in {
+      "abc".chomp("d") shouldBe "abc"
+      "abc".chomp("b") shouldBe "abc"
+      "abc".chomp("a") shouldBe "abc"
+      "abc".chomp("ab") shouldBe "abc"
+      "this is a long string\n".chomp("ng") shouldBe "this is a long string\n"
+      "".chomp("") shouldBe ""
+    }
+  }
 }
