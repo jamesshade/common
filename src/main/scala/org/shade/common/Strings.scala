@@ -27,5 +27,17 @@ object Strings {
       else
         str
     }
+
+    def firstLower: String = str.headOption match {
+      case Some(c) if c.isLower => str
+      case Some(c) => c.toLower +: str.tail
+      case None => str
+    }
+
+    def firstUpper: String = str.headOption match {
+      case Some(c) if c.isUpper => str
+      case Some(c) => c.toUpper +: str.tail
+      case None => str
+    }
   }
 }
