@@ -27,7 +27,7 @@ trait EnumCompanion[T, W <: Wrapped[T]] {
 
   private lazy val indexed: Map[W, Int] = all.zipWithIndex.toMap
 
-  private lazy val truncateForErrorsAt = all.toString.map(_.toString.length).max + 10
+  private lazy val truncateForErrorsAt = all.map(_.toString.length).max + 10
 
   private implicit class ItemDecorator(value: W) {
 
