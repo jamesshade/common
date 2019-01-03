@@ -53,6 +53,13 @@ case class RelativePath(value: Path) extends Wrapped[Path] {
 object RelativePath {
 
   val empty: RelativePath = RelativePath(Paths.get(""))
+
+  def of(path: Path): Either[String, RelativePath] = {
+    path.isAbsolute match {
+      case true => Left(s"Expected a relative path, got: $path")
+      case false => Right(RelativePath(path))
+    }
+  }
 }
 
 
@@ -101,4 +108,12 @@ case class AbsolutePath(value: Path) extends Wrapped[Path] {
 object AbsolutePath {
 
   val root: AbsolutePath = AbsolutePath(Paths.get("/"))
+
+  def of(path: Path): Either[String, AbsolutePath] = {
+    path.isAbsolute match {
+      case true => Right(AbsolutePath(path))
+      case false if path.toString.isEmpty => Left(s"Expected an absolute path, got an empty path")
+      case false => Left(s"Expected an absolute path, got: $path")
+    }
+  }
 }

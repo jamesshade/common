@@ -10,12 +10,29 @@ class AbsolutePathSpec extends WordSpec with Matchers {
 
   private def ap(path: String) = AbsolutePath(Paths.get(path))
 
+  private def of(path: String) = AbsolutePath.of(Paths.get(path))
+
   private def rp(path: String) = RelativePath(Paths.get(path))
 
   "root" should {
 
     "represent the root path" in {
       AbsolutePath.root shouldBe ap("/")
+    }
+  }
+
+  "of" should {
+
+    "return Left with an error message if the path is relative" in {
+      of("abc") shouldBe Left("Expected an absolute path, got: abc")
+      of("abc/def") shouldBe Left("Expected an absolute path, got: abc/def")
+      of("") shouldBe Left("Expected an absolute path, got an empty path")
+    }
+
+    "return the path if it is absolute" in {
+      of("/abc") shouldBe Right(AbsolutePath(Paths.get("/abc")))
+      of("/abc/def") shouldBe Right(AbsolutePath(Paths.get("/abc/def")))
+      of("/") shouldBe Right(AbsolutePath(Paths.get("/")))
     }
   }
 

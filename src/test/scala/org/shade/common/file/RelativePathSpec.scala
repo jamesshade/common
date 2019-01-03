@@ -10,10 +10,27 @@ class RelativePathSpec extends WordSpec with Matchers {
 
   private def rp(path: String) = RelativePath(Paths.get(path))
 
+  private def of(path: String) = RelativePath.of(Paths.get(path))
+
   "empty" should {
 
     "be an empty relative path" in {
       RelativePath.empty shouldBe rp("")
+    }
+  }
+
+  "of" should {
+
+    "return Left with an error message if the path is absolute" in {
+      of("/abc") shouldBe Left("Expected a relative path, got: /abc")
+      of("/abc/def") shouldBe Left("Expected a relative path, got: /abc/def")
+      of("/") shouldBe Left("Expected a relative path, got: /")
+    }
+
+    "return the path if it is relative" in {
+      of("abc") shouldBe Right(RelativePath(Paths.get("abc")))
+      of("abc/def") shouldBe Right(RelativePath(Paths.get("abc/def")))
+      of("") shouldBe Right(RelativePath(Paths.get("")))
     }
   }
 
